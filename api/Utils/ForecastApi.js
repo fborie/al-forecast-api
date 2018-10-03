@@ -2,7 +2,7 @@ import request from 'request';
 import moment from 'moment';
 
 const checkIfRequestFailed = () => {
-    if(Math.random() < 0.3){
+    if(Math.random() < 0.1){
         throw new Error('How unfortunate! The API Request Failed')
     }
 }
@@ -26,8 +26,7 @@ class ForecastApi{
        })
    }
 
-   _getForecast = async (lat,lon) => {
-        const geospace = `${lat},${lon}`;
+   _getForecast = async (geospace) => {
         try{
             let body = await this._doGetRequest(geospace);
             let jsonResponse = JSON.parse(body);
@@ -40,12 +39,12 @@ class ForecastApi{
         }
    }
     
-    getCityForecast = async (lat, lon) => {
+    getCityForecast = async (geospace) => {
         let succeeded = false;
         while (true){
             try{
                 checkIfRequestFailed();
-                return this._getForecast(lat,lon); 
+                return this._getForecast(geospace); 
             }
             catch(error){
                 console.log(error.message);

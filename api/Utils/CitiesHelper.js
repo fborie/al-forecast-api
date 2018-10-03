@@ -36,3 +36,9 @@ export const saveCities = (redisClient) => {
         redisClient.hset("cities", city.key, `${city.lat},${city.lon}`);
     })
 }
+
+export const getCitiesName = () => {
+    return cities.map( city => {
+        return city.key;
+    })
+}
