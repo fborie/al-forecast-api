@@ -24,11 +24,12 @@ io.on("connection", socket => {
   
     interval = setInterval(
         async () => {
-        let data = {};
+        let data = [];
         for(let i = 0; i < app.cities.length; i++){
-            let geospace = await hashGetAsync('cities', app.cities[i]);
+            let city = app.cities[i];
+            let geospace = await hashGetAsync('cities', city.key);
             let forecastApiData = await app.forecastApi.getCityForecast(geospace);
-            data[app.cities[i]] = forecastApiData;
+            data.push({name: city.key, country: city.country, ...forecastApiData});
         };
         socket.emit("update", data );
 

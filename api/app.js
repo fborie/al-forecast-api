@@ -1,7 +1,7 @@
 import express from 'express';
 import redis from 'redis';
 import ForecastApi from "./Utils/ForecastApi";
-import { saveCities, getCitiesName } from './Utils/CitiesHelper';
+import { saveCities, cities } from './Utils/CitiesHelper';
 
 const apiUrl = 'https://api.darksky.net/forecast/40f80393884a99ecc7c1a2b0bc2a4952/';
 
@@ -15,7 +15,7 @@ const forecastApi = new ForecastApi(redisClient, apiUrl);
 
 app.forecastApi = forecastApi;
 app.redisClient = redisClient;
-app.cities = getCitiesName();
+app.cities = cities;
 //forecastApi.getCityForecast(-33.45,-70.7).then(res => { console.log(res) });
 
 export default app;

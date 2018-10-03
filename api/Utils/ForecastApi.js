@@ -32,7 +32,8 @@ class ForecastApi{
             let jsonResponse = JSON.parse(body);
             return {
                 temperature: jsonResponse.currently.temperature,
-                time: jsonResponse.currently.time
+                time: jsonResponse.currently.time,
+                timezone: jsonResponse.timezone,
             };
         }catch(error){
             console.log(error.message);
