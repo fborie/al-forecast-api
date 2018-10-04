@@ -1,44 +1,31 @@
-export const cities = [
-    {
-        key: "santiago",
-        country: "Chile",
-        lat: -33.45,
-        lon: -70.6
-    },
-    {
-        key: "zurich",
-        country: "Suiza",
-        lat: 47.3,
-        lon: 8.54
-    },
-    {
-        key: "auckland",
-        country: "Nueva Zelanda",
-        lat: -36.85,
-        lon: 174.78
-    },
-    {
-        key: "sydney",
-        country: "Australia",
-        lat: -33.87,
-        lon: 151.2
-    },
-    {
-        key: "londres",
-        country: "Inglaterra",
-        lat: 51.5,
-        lon: -0.1275 
-    },
-    {
-        key: "atlanta",
-        country: "Estados Unidos de America",
-        lat: 33.75,
-        lon: -84.39
-    }
-];
+import cities from '../cities';
 
-export const saveCities = (redisClient) => {
-    cities.forEach( city => {
-        redisClient.hset("cities", city.key, `${city.lat},${city.lon}`);
-    })
+class CitiesHelper{
+
+    constructor(redisRepository, forecastApi){
+        this.redisRepository = redisRepository;
+        this.forecastApi = forecastApi;
+        this.saveCities = this.saveCities.bind(this);
+        this.getCitiesForecast = this.getCitiesForecast.bind(this);
+    }
+
+    saveCities = () => {
+        for(let i = 0; i < cities.length; i++){
+            this.redisRepository.hashSetAsync("cities", cities[i].key, `${cities[i].lat},${cities[i].lon}`);
+        }
+    }
+    
+    getCitiesForecast = async () => {
+        let data = [];
+        for(let i = 0; i < cities.length; i++){
+            let city = cities[i];
+            let geospace = await this.redisRepository.hashGetAsync('cities', city.key);
+            let forecastApiData = await this.forecastApi.getCityForecast(geospace);
+            data.push({name: city.key, country: city.country, ...forecastApiData});
+        };
+        return data;
+    }
+
 }
+
+export default CitiesHelper;

@@ -8,9 +8,9 @@ const checkIfRequestFailed = () => {
 }
 
 class ForecastApi{
-    constructor(redisClient, apiUrl){
-        this.redisClient = redisClient;
-        this.apiUrl = apiUrl;
+    constructor(redisRepository){
+        this.redisRepository = redisRepository;
+        this.apiUrl = 'https://api.darksky.net/forecast/40f80393884a99ecc7c1a2b0bc2a4952/';;
         this._doGetRequest = this._doGetRequest.bind(this);
     }
 
@@ -49,7 +49,8 @@ class ForecastApi{
             }
             catch(error){
                 console.log(error.message);
-                this.redisClient.hset('api.errors', moment().unix(), error.message);
+                let res = await this.redisRepository.hashSetAsync('api.errors', moment().unix(), error.message);
+                console.log("res: ", res);
             }
         }
     }
